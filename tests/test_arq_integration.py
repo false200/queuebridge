@@ -9,7 +9,7 @@ from pydantic import validate_call
 
 from queuebridge.arq import get_serializer_pair, qb_task, typed_result
 from queuebridge.codec import encode
-from tests.conftest import OrderCreate, OrderResult
+from tests.models import OrderCreate, OrderResult
 
 serialize, deserialize = get_serializer_pair()
 

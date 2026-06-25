@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tests.conftest import OrderCreate, OrderResult
+from tests.models import OrderCreate, OrderResult
 from queuebridge.codec import encode
 from queuebridge.hints import decode_args, decode_return, get_task_signature
 

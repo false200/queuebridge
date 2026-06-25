@@ -8,7 +8,7 @@ import pytest
 
 from queuebridge.codec import decode, encode
 from queuebridge.types import QB_TAG, QueuebridgeEncodeError
-from tests.conftest import OrderCreate, StatusEnum
+from tests.models import OrderCreate, StatusEnum
 
 
 def test_roundtrip_base_model() -> None:
@@ -54,7 +54,7 @@ def test_plain_dict_with_hint() -> None:
 
 
 def test_encode_unsupported_type() -> None:
-    from tests.conftest import UnsupportedClass
+    from tests.models import UnsupportedClass
 
     with pytest.raises(QueuebridgeEncodeError):
         encode(UnsupportedClass())

@@ -10,7 +10,7 @@ from dramatiq.brokers.stub import StubBroker
 from pydantic import validate_call
 
 from queuebridge.dramatiq import register_queuebridge
-from tests.conftest import OrderCreate
+from tests.models import OrderCreate
 
 received: list[OrderCreate] = []
 

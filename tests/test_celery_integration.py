@@ -8,7 +8,7 @@ pytest.importorskip("celery")
 from celery import Celery
 
 from queuebridge.celery import register_queuebridge, typed_result
-from tests.conftest import OrderCreate, OrderResult
+from tests.models import OrderCreate, OrderResult
 
 
 @pytest.fixture
