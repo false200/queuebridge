@@ -1,4 +1,4 @@
-# ![queuebridge](media/promo.svg)
+# queuebridge
 
 [![PyPI version](https://img.shields.io/pypi/v/queuebridge.svg)](https://pypi.org/project/queuebridge/)
 [![Python](https://img.shields.io/pypi/pyversions/queuebridge.svg)](https://pypi.org/project/queuebridge/)
