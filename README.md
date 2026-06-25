@@ -5,7 +5,7 @@
 [![CI](https://github.com/false200/queuebridge/actions/workflows/ci.yml/badge.svg)](https://github.com/false200/queuebridge/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Bidirectional [Pydantic](https://docs.pydantic.dev/) serialization for [Celery](https://docs.celeryq.dev/), [Dramatiq](https://dramatiq.io/), and [Arq](https://arq-docs.helpmanual.io/). One shared wire codec — pass models on enqueue, get models back from results.
+Bidirectional [Pydantic](https://docs.pydantic.dev/) serialization for [Celery](https://docs.celeryq.dev/), [Dramatiq](https://dramatiq.io/), and [Arq](https://arq-docs.helpmanual.io/). One shared wire codec: pass models on enqueue, get models back from results.
 
 Celery 5.5+ `pydantic=True` only validates on the worker. Callers still `model_dump()` before `.delay()`, and `.get()` returns a `dict`. Dramatiq chokes on models and UUIDs. Arq defaults to pickle. **queuebridge** fixes all three with a thin codec + backend adapters.
 
@@ -97,7 +97,7 @@ Recursively transform a Python value into a JSON-serializable structure.
 *Required*  
 Type: `Any`
 
-The value to encode — Pydantic models, nested containers, `UUID`, `datetime`, `Decimal`, `Enum`, etc.
+The value to encode: Pydantic models, nested containers, `UUID`, `datetime`, `Decimal`, `Enum`, etc.
 
 #### tag_models
 
@@ -125,7 +125,7 @@ Recursively decode a wire value back to Python using an optional type hint.
 *Required*  
 Type: `Any`
 
-Wire value — primitives, lists, dicts, or `__qb__` envelopes.
+Wire value: primitives, lists, dicts, or `__qb__` envelopes.
 
 #### hint
 
@@ -147,13 +147,13 @@ When `true`, raise `QueuebridgeDecodeError` if the value cannot be decoded.
 
 Recursively unwrap `__qb__` envelopes without type hints. Used internally by Dramatiq's decoder.
 
-Type: `Any` → `Any`
+Type: `Any` -> `Any`
 
 ---
 
-### `register_queuebridge(app, *, strict=False)` — Celery
+### `register_queuebridge(app, *, strict=False)` (Celery)
 
-Register the `queuebridge-json` Kombu serializer on a Celery app. Idempotent — safe to call twice.
+Register the `queuebridge-json` Kombu serializer on a Celery app. Idempotent: safe to call twice.
 
 #### app
 
@@ -171,7 +171,7 @@ Sets `task_serializer`, `result_serializer`, and `accept_content` on the app.
 
 ---
 
-### `typed_result(async_result, return_type)` — Celery
+### `typed_result(async_result, return_type)` (Celery)
 
 Wrap a Celery `AsyncResult` so `.get()` returns a Pydantic model instead of a `dict`.
 
@@ -185,13 +185,13 @@ Type: `celery.result.AsyncResult`
 *Required*  
 Type: `type[T]`
 
-Returns `TypedAsyncResult[T]` — proxies `.id`, `.state`, `.ready()`, etc.
+Returns `TypedAsyncResult[T]`, which proxies `.id`, `.state`, `.ready()`, etc.
 
 > Celery cannot safely monkey-patch `AsyncResult.get()` globally. Use `typed_result()` on the client.
 
 ---
 
-### `register_queuebridge(broker=None)` — Dramatiq
+### `register_queuebridge(broker=None)` (Dramatiq)
 
 Install `QueuebridgeEncoder` via `dramatiq.set_encoder()`. Call once at process startup.
 
@@ -204,7 +204,7 @@ If provided, also calls `dramatiq.set_broker(broker)`.
 
 ---
 
-### `get_serializer_pair()` — Arq
+### `get_serializer_pair()` (Arq)
 
 Returns `(serialize, deserialize)` callables for `job_serializer` / `job_deserializer`.
 
@@ -216,7 +216,7 @@ Uses **msgpack** over queuebridge-encoded dicts. Set on both `WorkerSettings` an
 
 ---
 
-### `qb_task(fn)` — Arq
+### `qb_task(fn)` (Arq)
 
 Decorator that decodes wire args/kwargs using function type hints before your async task runs.
 
@@ -231,7 +231,7 @@ async def process_order(ctx, order: OrderCreate) -> OrderResult:
 
 ---
 
-### `typed_result(job, return_type)` — Arq
+### `typed_result(job, return_type)` (Arq)
 
 ```python
 result = await typed_result(job, OrderResult)
@@ -260,26 +260,26 @@ Non-JSON-native values use a tagged envelope:
 | `list`, `dict`, `set`, `tuple` | recurse | recurse via hint |
 | Primitives | pass through | pass through |
 
-A plain `dict` + `OrderCreate` hint still validates — tags are for ambiguity, not required when hints are known.
+A plain `dict` + `OrderCreate` hint still validates. Tags are for ambiguity, not required when hints are known.
 
 ## Why not Celery `pydantic=True` alone?
 
 ```
 Producer                    Worker                      Client
-────────                    ──────                      ──────
-.delay(model)  ──X──>      pydantic=True validates     .get() → dict
+------                      ------                      ------
+.delay(model)  FAIL>        pydantic=True validates     .get() -> dict
 (model_dump() required)     args on worker only
 ```
 
-- [celery#9442](https://github.com/celery/celery/issues/9442) — models not JSON-serializable on enqueue
-- [dramatiq#660](https://github.com/Bogdanp/dramatiq/issues/660) — no Pydantic support
-- [arq#497](https://github.com/python-arq/arq/issues/497) — pickle default, Pydantic requested
+- [celery#9442](https://github.com/celery/celery/issues/9442): models not JSON-serializable on enqueue
+- [dramatiq#660](https://github.com/Bogdanp/dramatiq/issues/660): no Pydantic support
+- [arq#497](https://github.com/python-arq/arq/issues/497): pickle default, Pydantic requested
 
 ## Comparison
 
 | Solution | Celery | Dramatiq | Arq | Typed `.get()` |
 |----------|--------|----------|-----|----------------|
-| Celery `pydantic=True` | worker only | — | — | no |
+| Celery `pydantic=True` | worker only | n/a | n/a | no |
 | Blog / msgpack hacks | partial | partial | partial | varies |
 | **queuebridge** | yes | yes | yes | yes |
 
@@ -301,10 +301,10 @@ Deserialization resolves types by fully-qualified name (`import_fqn`). **Only de
 
 ## Related
 
-- [Celery Pydantic docs](https://docs.celeryq.dev/en/stable/userguide/tasks.html#argument-validation-with-pydantic) — worker-only validation
-- [Arq custom serializers](https://arq-docs.helpmanual.io/#custom-job-serializers) — msgpack hook point
-- [Dramatiq encoders](https://dramatiq.io/advanced.html#custom-encoders) — `set_encoder()` extension point
+- [Celery Pydantic docs](https://docs.celeryq.dev/en/stable/userguide/tasks.html#argument-validation-with-pydantic): worker-only validation
+- [Arq custom serializers](https://arq-docs.helpmanual.io/#custom-job-serializers): msgpack hook point
+- [Dramatiq encoders](https://dramatiq.io/advanced.html#custom-encoders): `set_encoder()` extension point
 
 ## License
 
-MIT © [false200](https://github.com/false200)
+MIT. See [LICENSE](LICENSE).
