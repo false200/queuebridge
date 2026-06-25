@@ -310,3 +310,10 @@ Deserialization resolves types by fully-qualified name (`import_fqn`). **Only de
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Community
+
+* [Contributing](CONTRIBUTING.md)
+* [Code of Conduct](CODE_OF_CONDUCT.md)
+* [Security policy](SECURITY.md)
+* [Documentation](https://queuebridge.readthedocs.io)

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://queuebridge.readthedocs.io
+    about: Read the docs before opening an issue
+  - name: PyPI
+    url: https://pypi.org/project/queuebridge/
+    about: Install the latest release

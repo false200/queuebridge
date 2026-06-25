@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an improvement or new capability
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is the issue or idea?
+      description: What problem are you solving? Which backend?
+      placeholder: |
+        e.g. Support allowed_modules filter on register_queuebridge...
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Proposed decision / outcome
+      description: What should we build or decide? Keep it concrete.
+      placeholder: |
+        e.g. Add allowed_modules=("myapp.",) parameter, document in security page
+    validations:
+      required: true

@@ -1,0 +1,33 @@
+name: Bug report
+description: Something is broken or not working as expected
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is the issue?
+      description: Describe the bug clearly. Include backend (Celery / Dramatiq / Arq), versions, and error message if any.
+      placeholder: |
+        e.g. process_order.delay(OrderCreate(...)) raises TypeError on Celery 5.6...
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Expected behavior / decision
+      description: What should happen instead? What outcome do you want?
+      placeholder: |
+        e.g. delay() should accept the model without model_dump()
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce (optional)
+      placeholder: Minimal code or commands to reproduce
+    validations:
+      required: false

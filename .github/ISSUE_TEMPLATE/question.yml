@@ -1,0 +1,21 @@
+name: Question
+description: Ask a question about usage or docs
+title: "[Question]: "
+labels:
+  - question
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is your question?
+      description: What are you trying to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: What answer or decision do you need?
+      description: e.g. "Should I use typed_result or pydantic=True alone?"
+    validations:
+      required: true
