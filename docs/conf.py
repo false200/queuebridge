@@ -12,8 +12,8 @@ sys.path.insert(0, str(SRC))
 project = "queuebridge"
 copyright = "2026, false200"
 author = "false200"
-release = "0.1.1"
-version = "0.1.1"
+release = "0.1.2"
+version = "0.1.2"
 
 extensions = [
     "sphinx.ext.autodoc",

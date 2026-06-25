@@ -9,9 +9,9 @@ Pass Pydantic models to ``.delay()``, ``.send()``, or ``enqueue_job()``. Get mod
    :target: https://pypi.org/project/queuebridge/
    :alt: PyPI version
 
-.. image:: https://img.shields.io/pypi/pyversions/queuebridge.svg
+.. image:: https://img.shields.io/badge/python-3.10%2B-blue.svg
    :target: https://pypi.org/project/queuebridge/
-   :alt: Python versions
+   :alt: Python 3.10+
 
 .. image:: https://github.com/false200/queuebridge/actions/workflows/ci.yml/badge.svg
    :target: https://github.com/false200/queuebridge/actions/workflows/ci.yml

@@ -1,7 +1,7 @@
 # queuebridge
 
 [![PyPI version](https://img.shields.io/pypi/v/queuebridge.svg)](https://pypi.org/project/queuebridge/)
-[![Python](https://img.shields.io/pypi/pyversions/queuebridge.svg)](https://pypi.org/project/queuebridge/)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://pypi.org/project/queuebridge/)
 [![CI](https://github.com/false200/queuebridge/actions/workflows/ci.yml/badge.svg)](https://github.com/false200/queuebridge/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
