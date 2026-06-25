@@ -26,6 +26,8 @@ pip install queuebridge[all]        # all backends
 
 Requires **Python 3.10+** and **Pydantic v2**.
 
+**Documentation:** https://queuebridge.readthedocs.io
+
 ## Usage
 
 ### Celery

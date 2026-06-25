@@ -16,9 +16,11 @@ dramatiq = ["dramatiq>=1.14"]
 arq = ["arq>=0.25", "msgpack>=1.0"]
 all = ["queuebridge[celery,dramatiq,arq]"]
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "fakeredis>=2", "httpx>=0.27", "ruff>=0.4", "mypy>=1.8"]
+docs = ["sphinx>=7", "furo>=2024", "sphinx-autodoc-typehints>=2.0"]
 
 [project.urls]
 Homepage = "https://github.com/false200/queuebridge"
+Documentation = "https://queuebridge.readthedocs.io"
 Issues = "https://github.com/false200/queuebridge/issues"
 
 [build-system]

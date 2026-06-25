@@ -105,7 +105,18 @@ def _decode_envelope(value: dict[str, Any]) -> Any:
 
 
 def encode(value: Any, *, tag_models: bool = True) -> Any:
-    """Recursively transform value into JSON-serializable structure."""
+    """Recursively transform a value into a JSON-serializable structure.
+
+    Args:
+        value: Python object to encode (models, UUID, datetime, containers, etc.).
+        tag_models: When True, wrap ``BaseModel`` instances in ``__qb__`` envelopes.
+
+    Returns:
+        JSON-compatible primitives, lists, dicts, or tagged envelopes.
+
+    Raises:
+        QueuebridgeEncodeError: If the type is not supported.
+    """
     if value is None or isinstance(value, (bool, int, float, str)):
         return value
 
@@ -195,7 +206,16 @@ def decode_wire(value: Any) -> Any:
 
 
 def decode(value: Any, hint: Any = Any, *, strict: bool = False) -> Any:
-    """Recursively decode wire value to Python using optional type hint."""
+    """Recursively decode a wire value to Python using an optional type hint.
+
+    Args:
+        value: Wire data (primitives, containers, or ``__qb__`` envelopes).
+        hint: Type annotation used for validation (e.g. ``OrderCreate``).
+        strict: Raise ``QueuebridgeDecodeError`` when decoding fails.
+
+    Returns:
+        Decoded Python object.
+    """
     if value is None or isinstance(value, (bool, int, float, str)):
         return value
 

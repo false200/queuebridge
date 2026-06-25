@@ -13,6 +13,7 @@ F = TypeVar("F", bound=Callable[..., Awaitable[Any]])
 
 
 def get_serializer_pair() -> tuple[Callable[[dict[str, Any]], bytes], Callable[[bytes], dict[str, Any]]]:
+    """Return msgpack serialize/deserialize callables for Arq worker and client."""
     return serialize, deserialize
 
 
@@ -28,5 +29,6 @@ def qb_task(fn: F) -> F:
 
 
 async def typed_result(job: Any, return_type: type[T]) -> T:
+    """Await ``job.result()`` and decode the payload into ``return_type``."""
     raw = await job.result()
     return cast(T, decode(raw, return_type))
