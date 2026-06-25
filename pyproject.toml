@@ -1,6 +1,6 @@
 [project]
 name = "queuebridge"
-version = "0.1.0"
+version = "0.1.1"
 description = "Bidirectional Pydantic serialization for Celery, Dramatiq, and Arq"
 readme = "README.md"
 license = { text = "MIT" }

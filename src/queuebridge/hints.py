@@ -1,3 +1,5 @@
+"""Type hints utilities for decoding task arguments and return values."""
+
 from __future__ import annotations
 
 import inspect
@@ -13,11 +15,26 @@ _signature_cache: dict[int, TaskSignature] = {}
 
 @dataclass(frozen=True)
 class TaskSignature:
+    """Cached type hints for a task function.
+
+    Attributes:
+        params: Mapping of parameter name to annotation (skips ``self``, ``cls``, ``ctx``).
+        return_type: Return annotation, or ``Any`` if missing.
+    """
+
     params: dict[str, Any]
     return_type: Any
 
 
 def get_task_signature(fn: Callable[..., Any]) -> TaskSignature:
+    """Extract and cache parameter/return type hints from a callable.
+
+    Args:
+        fn: Task function (sync, async, or decorated).
+
+    Returns:
+        :class:`TaskSignature` with ``params`` and ``return_type``.
+    """
     cache_key = id(fn)
     if cache_key in _signature_cache:
         return _signature_cache[cache_key]
@@ -42,6 +59,18 @@ def decode_args(
     args: tuple[Any, ...],
     kwargs: dict[str, Any],
 ) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """Decode wire ``args`` and ``kwargs`` using ``fn``'s type hints.
+
+    Skips decoding for ``self``, ``cls``, and ``ctx`` parameters (Arq/Celery).
+
+    Args:
+        fn: Task function whose annotations guide decoding.
+        args: Positional wire values.
+        kwargs: Keyword wire values.
+
+    Returns:
+        Tuple of ``(decoded_args, decoded_kwargs)``.
+    """
     sig = get_task_signature(fn)
     inspect_sig = inspect.signature(fn)
     all_param_names = list(inspect_sig.parameters.keys())
@@ -63,5 +92,14 @@ def decode_args(
 
 
 def decode_return(fn: Callable[..., Any], result: Any) -> Any:
+    """Decode a task return value using ``fn``'s return type hint.
+
+    Args:
+        fn: Task function.
+        result: Wire return value from the result backend.
+
+    Returns:
+        Decoded Python object.
+    """
     sig = get_task_signature(fn)
     return decode(result, sig.return_type)

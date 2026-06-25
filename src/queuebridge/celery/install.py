@@ -11,7 +11,23 @@ if TYPE_CHECKING:
 
 
 def register_queuebridge(app: Celery, *, strict: bool = False) -> None:
-    """Register queuebridge-json serializer on a Celery app. Idempotent."""
+    """Register the ``queuebridge-json`` serializer on a Celery application.
+
+    Configures ``task_serializer``, ``result_serializer``, and ``accept_content``.
+    Safe to call multiple times (idempotent).
+
+    Args:
+        app: Celery application instance (worker and producer must both call this).
+        strict: Reserved for future strict decode behavior on the client.
+
+    Example::
+
+        from celery import Celery
+        from queuebridge.celery import register_queuebridge
+
+        app = Celery("myapp", broker="redis://localhost:6379/0")
+        register_queuebridge(app)
+    """
     if getattr(app, "_queuebridge_installed", False):
         return
 

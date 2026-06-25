@@ -58,6 +58,7 @@ Contents
    :caption: Reference
 
    api/index
+   cookbook
    security
    faq
 

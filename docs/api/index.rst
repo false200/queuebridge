@@ -46,6 +46,9 @@ Celery
    :members:
    :show-inheritance:
 
+.. automodule:: queuebridge.celery.serializer
+   :members:
+
 Dramatiq
 --------
 

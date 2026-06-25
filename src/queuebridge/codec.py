@@ -1,3 +1,5 @@
+"""Core encode/decode codec and wire-format helpers for queuebridge."""
+
 from __future__ import annotations
 
 import importlib
@@ -29,11 +31,36 @@ _BUILTIN_DECODE: dict[str, type[Any]] = {
 
 
 def class_fqn(obj: type[Any] | object) -> str:
+    """Return the fully-qualified name of a type or instance.
+
+    Example: ``class_fqn(OrderCreate)`` -> ``"myapp.models.OrderCreate"``.
+
+    Args:
+        obj: A class or instance.
+
+    Returns:
+        ``"{module}.{qualname}"`` string used in ``__qb__`` envelopes.
+    """
     cls = obj if isinstance(obj, type) else type(obj)
     return f"{cls.__module__}.{cls.__qualname__}"
 
 
 def import_fqn(fqn: str) -> type[Any]:
+    """Import and return a type from its fully-qualified name.
+
+    Used when decoding ``__qb__`` envelopes. Respects ``ALLOWED_MODULE_PREFIXES``
+    when that tuple is non-empty.
+
+    Args:
+        fqn: e.g. ``"myapp.models.OrderCreate"``.
+
+    Returns:
+        The resolved type.
+
+    Raises:
+        QueuebridgeSecurityError: If the module prefix is blocked.
+        QueuebridgeDecodeError: If the FQN is invalid or not a type.
+    """
     module_name, _, qualname = fqn.rpartition(".")
     if not module_name:
         raise QueuebridgeDecodeError(f"invalid FQN: {fqn}")
@@ -53,6 +80,7 @@ def _make_envelope(type_name: str, payload: Any) -> dict[str, Any]:
 
 
 def is_qb_envelope(value: Any) -> bool:
+    """Return True if ``value`` is a queuebridge ``__qb__`` tagged envelope."""
     if not isinstance(value, dict) or QB_TAG not in value:
         return False
     inner = value[QB_TAG]
@@ -195,7 +223,17 @@ def _decode_union(value: Any, hint: Any, *, strict: bool) -> Any:
 
 
 def decode_wire(value: Any) -> Any:
-    """Recursively unwrap __qb__ envelopes without type hints."""
+    """Recursively unwrap ``__qb__`` envelopes without type hints.
+
+    Useful when you know the wire data contains tags but you do not have
+    function annotations (e.g. Dramatiq message decode path).
+
+    Args:
+        value: Wire data (nested dicts/lists with optional envelopes).
+
+    Returns:
+        Python objects with all envelopes resolved.
+    """
     if is_qb_envelope(value):
         return _decode_envelope(value)
     if isinstance(value, dict):
